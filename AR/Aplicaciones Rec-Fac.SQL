@@ -1,28 +1,28 @@
 WITH
     T_TOTALES_BASE
     AS
-        (SELECT ARA2.CASH_RECEIPT_ID                                                      t_CASHRECEIPT_ID        --> Identificador del Recibo/Cobro/Pago
-              , RCT2.CUSTOMER_TRX_ID                                                      t_CUSTOMERTRX_ID        --> Identificador de la Factura
-              , ACR2.currency_code                                                        Moneda_rec              --> Moneda del Recibo/Cobro/Pago
-              , RCT2.INVOICE_CURRENCY_CODE                                                Moneda_fac              --> Moneda de la Factura
-              , zxl.TAX_RATE_CODE                                                         Codigo_impuesto         --> Codigo de Impuesto de la Linea de la Factura
-              , RCTLA2.LINE_TYPE                                                          Tipo_linea              --> Tipo de Linea: "Linea o Impuesto"
-              , NVL( acr2.exchange_rate, 1 )                                              tipo_cambio_rec         --> Tipo de Cambio del Recibo
-              , NVL( ARA2.TRANS_TO_RECEIPT_RATE, 1 )                                      tipo_cambio_app         --> Tipo de Cambio de la Aplicacion
-              , NVL( rct2.exchange_rate, 1 )                                              tipo_cambio_fac         --> Tipo de Cambio de la Factura
-              , (1 / (1 / NVL( acr2.exchange_rate, 1 )))                                  TC_inverso_rec          --> Tipo de Cambio Inverso del Recibo                             
-              , (1 / (1 / NVL( ARA2.TRANS_TO_RECEIPT_RATE, 1 )))                          TC_inverso_app          --> Tipo de Cambio Inverso de la Aplicacion
-              , (1 / (1 / NVL( rct2.exchange_rate, 1 )))                                  TC_inverso_rec          --> Tipo de Cambio Inverso de la Factura 
-              --------------------------------------------------------------------------------------------------------
-              , RCTLA2.TAXABLE_AMOUNT                                                     Impuesto_linea_TRX      --> Linea de la Factura  
-              , RCTLA2.EXTENDED_AMOUNT                                                    Monto_Linea_TRX         --> Linea de la Factura
-              , RCTLA2.REVENUE_AMOUNT                                                     Monto_Ingresos_TRX      --> Linea de la Factura
-              , ARA2.LINE_APPLIED                                                         Linea_aplicada          --> Aplicacion
-              , ARA2.TAX_APPLIED                                                          Impuesto_aplicado       --> Aplicacion
-              , ARA2.AMOUNT_APPLIED                                                       MONTO_APLICDO           --> Aplicacion
-            ----------------------------------------------------------------------------------------------------------
-              , 1 / ARA2.TRANS_TO_RECEIPT_RATE                                            equivalencia            --> Aplicacion           Calculos de Ejemplos
-              , 1/(1 / ARA2.TRANS_TO_RECEIPT_RATE)                                        nuevo_TC                --> Nuevo Tipo de Cambio Calculos de Ejemplos
+        (SELECT ARA2.CASH_RECEIPT_ID                              t_CASHRECEIPT_ID        --> Identificador del Recibo/Cobro/Pago
+              , RCT2.CUSTOMER_TRX_ID                              t_CUSTOMERTRX_ID        --> Identificador de la Factura
+              , ACR2.currency_code                                Moneda_rec              --> Moneda del Recibo/Cobro/Pago
+              , RCT2.INVOICE_CURRENCY_CODE                        Moneda_fac              --> Moneda de la Factura
+              , zxl.TAX_RATE_CODE                                 Codigo_impuesto         --> Codigo de Impuesto de la Linea de la Factura
+              , RCTLA2.LINE_TYPE                                  Tipo_linea              --> Tipo de Linea: "Linea o Impuesto"
+              , NVL( acr2.exchange_rate, 1 )                      tipo_cambio_rec         --> Tipo de Cambio del Recibo
+              , NVL( ARA2.TRANS_TO_RECEIPT_RATE, 1 )              tipo_cambio_app         --> Tipo de Cambio de la Aplicacion
+              , NVL( rct2.exchange_rate, 1 )                      tipo_cambio_fac         --> Tipo de Cambio de la Factura
+              , (1 / (1 / NVL( acr2.exchange_rate, 1 )))          TC_inverso_rec          --> Tipo de Cambio Inverso del Recibo                             
+              , (1 / (1 / NVL( ARA2.TRANS_TO_RECEIPT_RATE, 1 )))  TC_inverso_app          --> Tipo de Cambio Inverso de la Aplicacion
+              , (1 / (1 / NVL( rct2.exchange_rate, 1 )))          TC_inverso_rec          --> Tipo de Cambio Inverso de la Factura 
+              --------------------------------------------------------------------------------
+              , RCTLA2.TAXABLE_AMOUNT                             Impuesto_linea_TRX      --> Linea de la Factura  
+              , RCTLA2.EXTENDED_AMOUNT                            Monto_Linea_TRX         --> Linea de la Factura
+              , RCTLA2.REVENUE_AMOUNT                             Monto_Ingresos_TRX      --> Linea de la Factura
+              , ARA2.LINE_APPLIED                                 Linea_aplicada          --> Aplicacion
+              , ARA2.TAX_APPLIED                                  Impuesto_aplicado       --> Aplicacion
+              , ARA2.AMOUNT_APPLIED                               MONTO_APLICDO           --> Aplicacion
+            ----------------------------------------------------------------------------------
+              , 1 / ARA2.TRANS_TO_RECEIPT_RATE                    equivalencia            --> Aplicacion           Calculos de Ejemplos
+              , 1/(1 / ARA2.TRANS_TO_RECEIPT_RATE)                nuevo_TC                --> Nuevo Tipo de Cambio Calculos de Ejemplos
            FROM AR_CASH_RECEIPTS_ALL            ACR2   --* Recibos
               , AR_RECEIVABLE_APPLICATIONS_ALL  ARA2   --* Aplicaciones
               , RA_CUSTOMER_TRX_ALL             RCT2   --* Facturas
